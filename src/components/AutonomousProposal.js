@@ -23,21 +23,21 @@ class AutonomousProposal extends React.Component {
     getVotes = async () => {
         const uniAddress = process.env.REACT_APP_UNI_ADDRESS;
         let uni = new this.props.web3.eth.Contract(uniABI, uniAddress);
-        let votes =(await uni.methods.getCurrentVotes(this.props.autoProp.address).call() / 1e18).toFixed(0);
+        let votes = (await uni.methods.getCurrentVotes(this.props.autoProp.returnValues.proposal).call() / 1e18).toFixed(0);
         this.setState({ rawVotes: votes });
         if(votes >= 1_000_000) {
             this.setState({ votes: (votes / 1_000_000).toFixed(2) + 'M' });
         } else if(votes >= 1_000) {
             this.setState({ votes: (votes / 1_000).toFixed(2) + 'K' });
         } else {
-            this.setState({ votes: (votes).toFixed(0) });
+            this.setState({ votes: (votes/1).toFixed(0) });
         }
     }
 
     delegateTo = async () => {
         const uniAddress = process.env.REACT_APP_UNI_ADDRESS;
         let uni = new this.props.web3.eth.Contract(uniABI, uniAddress);
-        await uni.methods.delegate(this.props.autoProp.address).send({ from: this.state.account });
+        await uni.methods.delegate(this.props.autoProp.returnValues.proposal).send({ from: this.state.account });
     }
 
     componentDidMount = async () => {
