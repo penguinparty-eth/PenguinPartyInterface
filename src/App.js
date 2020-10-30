@@ -33,7 +33,7 @@ class App extends React.Component {
 
             //quickly get balances of cached delegate list before computing more accurate leaderboard
             let delegates = [];
-            for(let i = 0; i < Math.min(30, cachedDelegateList.length); i++) {
+            for(let i = 0; i < Math.min(50, cachedDelegateList.length); i++) {
                 delegates.push({
                     delegate: cachedDelegateList[i],
                     votes: await uni.methods.getCurrentVotes(cachedDelegateList[i]).call() / 1e18
@@ -41,6 +41,9 @@ class App extends React.Component {
             }
             delegates = delegates.sort((a, b) => {
                 return a.votes < b.votes ? 1 : -1;
+            });
+            delegates = delegates.filter(a => {
+                return a.votes !== 0;
             });
             this.setState({delegates: delegates});
 
